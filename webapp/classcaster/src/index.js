@@ -1,11 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ChakraProvider } from "@chakra-ui/react"
+import { ChakraProvider } from "@chakra-ui/react";
 import './index.css';
-import App from './App';
+import Router from "./routers/AppRouter";
+// import App from './App';
 
-ReactDOM.render(
+const storage = (
   <ChakraProvider>
-    <App />
-  </ChakraProvider>, 
-  document.getElementById('root'));
+    <Router />
+  </ChakraProvider>
+)
+
+const renderApp = () => {
+  ReactDOM.render(
+    storage, 
+    document.getElementById('root'));
+}
+
+renderApp();
