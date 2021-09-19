@@ -1,8 +1,33 @@
 import React from "react";
-import { Grid, GridItem, Text, useBreakpointValue, Heading, Square } from "@chakra-ui/react";
+import { 
+    Grid, 
+    GridItem, 
+    Text, 
+    Heading, 
+    Square, 
+    Box,
+    Button,
+    FormControl,
+    FormLabel,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Input, 
+    useBreakpointValue, 
+    useDisclosure,
+} from "@chakra-ui/react";
+import { MdBuild } from "react-icons/md"
 import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const initialRef = React.useRef();
+    const finalRef = React.useRef();
 
     return (
         <Grid
@@ -33,6 +58,57 @@ const Dashboard = (props) => {
                         Dashboard
                     </Text>
                 </Heading>
+                
+                <Box m={5} w="100%">
+                    <Button 
+                        leftIcon={<MdBuild />} colorScheme="blue" 
+                        variant="outline" minW="8rem" onClick={onOpen}
+                        >
+                        Edit Profile
+                    </Button>
+                    <Modal
+                        initialFocusRef={initialRef}
+                        finalFocusRef={finalRef}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                    >
+                        <ModalOverlay />
+                        <ModalContent>
+                        <form method="POST" action="/login/password">
+                            <ModalHeader>Profile</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody pb={6}>
+                            <FormControl>
+                                <FormLabel>Username</FormLabel>
+                                <Input
+                                ref={initialRef}
+                                name="username"
+                                placeholder="Username"
+                                />
+                            </FormControl>
+
+
+                            <FormControl>
+                                <FormLabel>Race</FormLabel>
+                                <Input
+                                name="race"
+                                placeholder="race"
+                                />
+                            </FormControl>
+
+                            </ModalBody>
+
+                            <ModalFooter>
+                            <Button type="submit" colorScheme="blue" mr={3}>
+                                Login
+                            </Button>
+                            <Button onClick={onClose}>Cancel</Button>
+                            </ModalFooter>
+                        </form>
+                        </ModalContent>
+                    </Modal>
+                </Box>
+
             </GridItem>
             <GridItem rowSpan={2} colSpan={3} bg="papayawhip">
                 <Grid 
