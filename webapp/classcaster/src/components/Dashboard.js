@@ -1,5 +1,9 @@
 import React from "react";
 import { 
+    Badge,
+    Center,
+    List,
+    ListItem,
     Grid, 
     GridItem, 
     Text, 
@@ -17,10 +21,12 @@ import {
     ModalBody,
     ModalCloseButton,
     Input, 
+    Select,
     useBreakpointValue, 
     useDisclosure,
+    useColorModeValue,
 } from "@chakra-ui/react";
-import { MdBuild } from "react-icons/md"
+import { MdBuild, MdCheckCircle } from "react-icons/md";
 import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
@@ -75,7 +81,9 @@ const Dashboard = (props) => {
                         <ModalOverlay />
                         <ModalContent>
                         <form method="POST" action="/login/password">
-                            <ModalHeader>Profile</ModalHeader>
+                            <ModalHeader>
+                            Profile 
+                            </ModalHeader>
                             <ModalCloseButton />
                             <ModalBody pb={6}>
                             <FormControl>
@@ -87,30 +95,70 @@ const Dashboard = (props) => {
                                 />
                             </FormControl>
 
+                            <FormControl>
+                                <FormLabel mt={3}>Race</FormLabel>
+                                <Select placeholder="Select option">
+                                    <option value="option1">American Indian or Alaskan Native</option>
+                                    <option value="option2">Asian</option>
+                                    <option value="option3">Black or African American</option>
+                                    <option value="option4">Hispanic or Latino</option>
+                                    <option value="option5">White</option>
+                                    <option value="option6">Native Hawaiian or Other Pacific Islander</option>
+                                    <option value="option7">Other / Decline to identify</option>
+                                </Select>
+                            </FormControl>
 
                             <FormControl>
-                                <FormLabel>Race</FormLabel>
-                                <Input
-                                name="race"
-                                placeholder="race"
-                                />
+                                <FormLabel mt={3}>Gender</FormLabel>
+                                <Select placeholder="Select option">
+                                    <option value="option1">Male</option>
+                                    <option value="option2">Female</option>
+                                    <option value="option3">Neither</option>
+                                    <option value="option4">Prefer not to answer</option>
+                                </Select>
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel mt={3}>Number of upper division courses taken</FormLabel>
+                                <Input name="upperdiv" placeholder="0"/>
+                            </FormControl>
+
+                            <FormControl>
+                                <FormLabel mt={3}>Number of lower division courses taken</FormLabel>
+                                <Input name="lowerdiv" placeholder="0"/>
                             </FormControl>
 
                             </ModalBody>
 
                             <ModalFooter>
                             <Button type="submit" colorScheme="blue" mr={3}>
-                                Login
+                                Save
                             </Button>
                             <Button onClick={onClose}>Cancel</Button>
                             </ModalFooter>
                         </form>
                         </ModalContent>
                     </Modal>
+
+                    <Button 
+                        leftIcon={<MdBuild />} colorScheme="teal" 
+                        variant="outline" minW="8rem" mt={3}
+                        >
+                        Group Recommendation
+                    </Button>
                 </Box>
 
             </GridItem>
-            <GridItem rowSpan={2} colSpan={3} bg="papayawhip">
+            <GridItem rowSpan={2} colSpan={6}>
+                <Box
+                    role={'group'}
+                    p={6}
+                    w={'full'}
+                    bg={useColorModeValue('white', 'gray.800')}
+                    boxShadow={'2xl'}
+                    rounded={'lg'}
+                    pos={'relative'}
+                    zIndex={1}>
                 <Grid 
                     templateRows="repeat(1, 1fr)" 
                     templateColumns="repeat(5, 1fr)" 
@@ -118,22 +166,49 @@ const Dashboard = (props) => {
                     gap = {4} 
                     height = {"100%"}
                 >
-                    <GridItem rowSpan={1} colSpan={2} bg={'blue'} p={7}>
+                    <GridItem rowSpan={1} colSpan={1} p={5}>
                         <Square h={"100%"} w="100%">
-                            <Heading fontSize={"6xl"}>70%</Heading>
+                            <Heading fontSize={"6xl"}>15</Heading>
+                            <Box as="span" color="gray.600" fontSize="lg" pl={3}>
+                                hrs
+                            </Box>
                         </Square>
+                        <Text color="gray.400" pl={3}>estimate time of completion</Text>
                     </GridItem>
-                    <GridItem rowSpan={1} colSpan={3} bg={'blue'}/>
+                    <GridItem rowSpan={1} colSpan={4} m={2}> 
+                    <Center>
+                        <List spacing={3}>
+                            <ListItem>
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                    CS189
+                                </Badge>  
+                                <Text as="span" fontSize="lg" ml="9">
+                                    Homework 2 should take you <b>8 hours</b>
+                                </Text>
+                            </ListItem>
+                            <ListItem>
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                    EECS16B
+                                </Badge>  
+                                <Text as="span" fontSize="lg" ml="4">Lab 2: Transistors should take you <b>3 hours</b></Text>
+                            </ListItem>
+                            <ListItem>
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                    EECS16B
+                                </Badge>  
+                                <Text as="span" fontSize="lg" ml="4">Homework 1: 16A Review should take you <b>4 hours</b></Text>
+                            </ListItem>
+                        </List>
+                    </Center>
+                    </GridItem>
                 </Grid>
-            </GridItem>
-            <GridItem rowSpan={2} colSpan={3} bg="papayawhip">
-            
+                </Box>
             </GridItem>
             <GridItem rowSpan={5} colSpan={6}>
                 <Grid 
                     templateRows="repeat(4, 1fr)" 
                     templateColumns="repeat(3, 1fr)" 
-                    p = {3} 
+                    p = {3} mt={9}
                     gap = {4} 
                     height = {"100%"}
                 >
@@ -159,8 +234,8 @@ const Dashboard = (props) => {
                         </GridItem> 
                         <GridItem rowSpan={1} colSpan={1}> 
                             <CourseItem 
-                                courseNum={"PHILO 3"} 
-                                courseName={"Nature of Mind"}
+                                courseNum={"CS 198-177"} 
+                                courseName={"Algorithmic Thinking"}
                             />
                         </GridItem> 
                     
