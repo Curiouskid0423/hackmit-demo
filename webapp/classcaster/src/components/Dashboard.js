@@ -1,6 +1,8 @@
 import React from "react";
+import { withRouter } from "react-router";
 
-const Dashboard = () => {
+const Dashboard = (props) => {
+
     return (
         <div>
             <h1> This is dashboard page. </h1>
@@ -8,4 +10,4 @@ const Dashboard = () => {
     );
 }
 
-export default Dashboard;
+export default withRouter(Dashboard);
