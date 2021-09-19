@@ -1,4 +1,5 @@
 const db = require("../db/index");
+const axios = require('axios');
 
 async function getRecommendedGroup(user_id, course_id) {
   // TODO: Return recommended group for user with id = user_id in course with id = course_id
@@ -7,24 +8,15 @@ async function getRecommendedGroup(user_id, course_id) {
 
   const background_info = db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcluster_schema.user", []);
 
-  // // Creating a XHR object
-  // let xhr = new XMLHttpRequest();
-  // let url = "hackmit-1.azurewebsites.net";
+  console.log(info, background_info);
 
-  // xhr.open("POST", url, true);
-  // xhr.setRequestHeader("Content-Type", "application/json");
+  const res = await axios.post("https://hackmit-1.azurewebsites.net", {
 
-  // xhr.onreadystatechange = function () {
-  //     if (xhr.readyState === 4 && xhr.status === 200) {
-  //         // Print received data from server
-  //         result.innerHTML = this.responseText;
-  //     }
-  // };
+  });
 
-  // // Converting JSON data to string
-  // // TODO: Change this to actual JSON data
-  // var data = JSON.stringify({ "name": name.value, "email": email.value });
-  // xhr.send(data);
+  console.log(res);
+
+  return res;
 
 }
 
