@@ -23,8 +23,8 @@ const CoursePage = (props) => {
         setIsLoading(false);
         setTimeout(() => {
           setAssignments(res.data);
-        }, 350);
-      }, 150);
+        }, 170);
+      }, 50);
     })();
   }, [isLoading, courseId]);
 
@@ -56,6 +56,7 @@ const CoursePage = (props) => {
   ];
 
   let daysCreated = [17, 12, 7, 5].map((x) => "2021-09-" + x.toString());
+  let tempTimes = [1, 3, 4, 4].map((x) => x.toString());
 
   if (isLoading || !assignments.length) {
     return (
@@ -83,6 +84,7 @@ const CoursePage = (props) => {
         <Grid h={"100vh"} p={50} templateColumns="repeat(2, 1fr)">
           {assignments.map((item, i) => {
             item.daysCreated = daysCreated[i % daysCreated.length]; // fixme
+            item.forecastTime = tempTimes[i % tempTimes.length]; // fixme
             return (
               <GridItem key={"griditem" + i}>
                 <Center>
