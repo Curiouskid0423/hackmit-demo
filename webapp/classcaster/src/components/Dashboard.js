@@ -26,7 +26,8 @@ import {
     useDisclosure,
     useColorModeValue,
 } from "@chakra-ui/react";
-import { MdBuild, MdCheckCircle } from "react-icons/md";
+import { ChatIcon } from "@chakra-ui/icons";
+import { MdBuild } from "react-icons/md";
 import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
@@ -141,7 +142,7 @@ const Dashboard = (props) => {
                     </Modal>
 
                     <Button 
-                        leftIcon={<MdBuild />} colorScheme="teal" 
+                        leftIcon={<ChatIcon />} colorScheme="orange" 
                         variant="outline" minW="8rem" mt={3}
                         >
                         Group Recommendation
@@ -179,7 +180,7 @@ const Dashboard = (props) => {
                     <Center>
                         <List spacing={3}>
                             <ListItem>
-                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="orange" fontSize="m" size="sm">
                                     CS189
                                 </Badge>  
                                 <Text as="span" fontSize="lg" ml="9">
@@ -187,13 +188,13 @@ const Dashboard = (props) => {
                                 </Text>
                             </ListItem>
                             <ListItem>
-                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="orange" fontSize="m" size="sm">
                                     EECS16B
                                 </Badge>  
                                 <Text as="span" fontSize="lg" ml="4">Lab 2: Transistors should take you <b>3 hours</b></Text>
                             </ListItem>
                             <ListItem>
-                                <Badge borderRadius="full" m="2" px="3" colorScheme="blue" fontSize="m" size="sm">
+                                <Badge borderRadius="full" m="2" px="3" colorScheme="orange" fontSize="m" size="sm">
                                     EECS16B
                                 </Badge>  
                                 <Text as="span" fontSize="lg" ml="4">Homework 1: 16A Review should take you <b>4 hours</b></Text>
