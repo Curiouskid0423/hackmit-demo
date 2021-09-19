@@ -55,7 +55,7 @@ const CoursePage = (props) => {
     },
   ];
 
-  let daysCreated = [17, 12, 7, 5].map((x) => "2021-09-" + x.toString());
+  let daysCreated = [17, 12, "07", "05"].map((x) => "2021-09-" + x.toString());
   let tempTimes = [1, 3, 4, 4].map((x) => x.toString());
 
   if (isLoading || !assignments.length) {
