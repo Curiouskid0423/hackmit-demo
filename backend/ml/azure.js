@@ -5,8 +5,23 @@ const math = require('mathjs');
 async function getRecommendedGroup(user_id, course_id, include_background=1) {
   // TODO: Return recommended group for user with id = user_id in course with id = course_id
 
-  const info = db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
-  const background_info = db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
+  const info = await db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
+  const background_info = await db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
+
+  var race_map = {
+    "white": 0,
+    "black": 1,
+    "asian": 2,
+    "hawaiian": 3,
+    "other": 4,
+    "not_provided": 5
+  }
+  var gender_map = {
+    "male": 0,
+    "female": 1,
+    "other": 2,
+    "not_provided": 3
+  }
 
   var class_feat = {};
   // Lists of ages...etc for each user_id
@@ -19,32 +34,33 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
   var days = {};
   var completes = {};
 
-  // Collect values for mean and std
-  for (const row in background_info.rows) {
-    class_feat[row[0]] = {
-      "race": row[1],
-      "gender": row[2]
+   // Collect values for mean and std
+  for (const row of background_info) {
+    class_feat[row.user_id] = {
+      "race": race_map[row.race],
+      "gender": gender_map[row.gender]
     }
-    ages.push(row[3]);
-    uppers.push(row[4]);
-    lowers.push(row[5]);
+    ages.push(parseInt(row.age));
+    uppers.push(parseInt(row.num_upper_taken));
+    lowers.push(parseInt(row.num_lower_taken));
   }
 
-  for (const row in info.rows) {
-    if (!(row[1] in times)){
-      times[row[1]] = [row[2]];
+  for (const row of info) {
+    if (!(row.assignment_id in times)){
+      times[row.assignment_id] = [parseFloat(row.time)];
     } else {
-      times[row[1]].push(row[2])
+      times[row.assignment_id].push(parseFloat(row.time))
     }
-    if (!(row[1] in days)){
-      days[row[1]] = [row[4]];
+    if (!(row.assignment_id in days)){
+      days[row.assignment_id] = [parseInt(row.days)];
     } else {
-      days[row[1]].push(row[4]);
+      days[row.assignment_id].push(parseInt(row.days));
     }
-    if (!row[0] in completes) {
-      completes[row[0]] = 1;
+    var complete_amt = 1 ? row.complete : 0;
+    if (!row.user_id in completes) {
+      completes[row.user_id] = complete_amt;
     } else {
-      completes[row[0]] += 1;
+      completes[row.user_id] += complete_amt;
     }
   }
 
@@ -52,7 +68,11 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
   var age_metrics = [math.mean(ages), math.std(ages)];
   var upper_metrics = [math.mean(uppers), math.std(uppers)];
   var lower_metrics = [math.mean(lowers), math.std(lowers)];
-  var complete_metrics = [math.mean(completes.values()), math.std(completes.values())];
+  var completes_vals = [];
+  for (var key in completes) {
+    completes_vals.push(completes[key]);
+  }
+  var complete_metrics = [math.mean(completes_vals), math.std(completes_vals)];
 
   var time_metrics = {};
   var days_metrics = {};
@@ -68,13 +88,13 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     class_feat[uid]["complete"] = (value - complete_metrics[0]) / complete_metrics[1];
   }
 
-  for (const row in background_info.rows) {
+  for (const row of background_info) {
     class_feat[row[0]]["age"] = (row[3] - age_metrics[0]) / age_metrics[1];
     class_feat[row[0]]["upper"] =(row[4] - upper_metrics[0]) / upper_metrics[1];
     class_feat[row[0]]["lower"] = (row[5] - lower_metrics[0]) / lower_metrics[1];
   }
 
-  for (const row in info.rows) {
+  for (const row of info) {
     // Have class_feat.time be a list of all the times this user spent on each assignment
     if (!("time" in class_feat[row[0]])){
       class_feat[row[0]]["time"] = [(row[2] - time_metrics[row[1]][0]) / time_metrics[row[1]][1]];
@@ -94,8 +114,6 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     values["days"] = math.mean(values["days"]);
   }
 
-  console.log(info[0], background_info[0]);
-
   // Setting study groups of 3 for now; can change later.
   const res = await axios.post("https://hackmit-1.azurewebsites.net", {
     "uid": user_id,
@@ -103,8 +121,6 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     "include_background": include_background,
     "class_feat": class_feat
   });
-
-  console.log(res);
 
   return res;
 
