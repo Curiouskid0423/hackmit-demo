@@ -46,6 +46,10 @@ router.post("/api", async (req, res, next) => {
     const { user, course } = req.body;
     const output = await azure.getRecommendedGroup(user, course);
     return res.json(output);
+  } else if (type == "trainTangram") {
+    const { assignment } = req.body;
+    const output = await tangram.updatePredictedScores(assignment);
+    return res.json(output);
   }
 });
 

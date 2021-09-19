@@ -41,10 +41,16 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
       "race": race_map[row.race],
       "gender": gender_map[row.gender]
     }
-    ages.push(parseInt(row.age));
+    let intage = parseInt(row.age);
+    if (intage == null || isNaN(intage)) {
+      ages.push(20);
+    } else {
+      ages.push(intage);
+    }
     uppers.push(parseInt(row.num_upper_taken));
     lowers.push(parseInt(row.num_lower_taken));
   }
+
 
   for (const row of info) {
     if (!(row.assignment_id in times)){
@@ -93,7 +99,12 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
 
   // Add into class_feat
   for (const [uid, value] of Object.entries(completes)) {
-    class_feat[uid]["complete"] = (value - complete_metrics[0]) / complete_metrics[1];
+    let val = (value - complete_metrics[0]) / complete_metrics[1];
+    if (val == null || isNaN(val)) {
+      class_feat[uid]["complete"] = 0;
+    } else {
+      class_feat[uid]["complete"] = val;
+    }
   }
 
   for (const row of background_info) {
@@ -118,8 +129,14 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
 
   // Take average of all the times each user spends on each assignment
   for (const [uid, values] of Object.entries(class_feat)) {
-    values["time"] = math.mean(values["time"]);
-    values["days"] = math.mean(values["days"]);
+    if (!("time" in values)) {
+      values["time"] = 0;
+    } else {
+      let time_val = math.mean(values["time"]);
+      let day_val = math.mean(values["days"]);
+      values["time"] = time_val;
+      values["days"] = day_val;
+    }
   }
 
   console.log(class_feat);
