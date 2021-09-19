@@ -6,7 +6,8 @@ var router = express.Router();
 
 router.post("/api", async (req, res, next) => {
   const { type } = req.body;
-  const userId = (req.user_ ?? {}).id ?? "000c352d-6f85-4d22-8717-a95e4e9c59a1"; // fixme: req.user to use live auth
+  //   const userId = (req.user_ ?? {}).id ?? "000c352d-6f85-4d22-8717-a95e4e9c59a1"; // fixme: req.user to use live auth
+  const userId = "000c352d-6f85-4d22-8717-a95e4e9c59a1";
   console.log(req.isAuthenticated(), userId);
   if (type === "getCourseAssignments") {
     // name, numCompleted, numStudents, forecastTime
@@ -28,7 +29,7 @@ router.post("/api", async (req, res, next) => {
             SELECT assignment_id, user_id, MAX(completed) AS completed FROM classcaster_schema.times
             WHERE assignment_id IN (${assignments_str})
             GROUP BY (assignment_id, user_id)
-        ) GROUP BY (assignment_id);
+        ) GROUP BY (assignment_id) ORDER BY assignment_id;
         `,
       [userId]
     );
