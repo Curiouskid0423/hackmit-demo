@@ -75,7 +75,7 @@ router.post(
   })
 );
 
-router.get("/logout", function (req, res, next) {
+router.post("/logout", function (req, res, next) {
   req.logout();
   res.redirect("/");
 });
@@ -106,7 +106,7 @@ router.post("/signup", function (req, res, next) {
             JSON.stringify(salt),
             req.body.name,
           ],
-          /*retries=*/ 0
+          /*retries=*/ 2
         );
 
         const row = output.rows[0];

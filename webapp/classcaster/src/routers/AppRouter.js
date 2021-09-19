@@ -4,6 +4,7 @@ import Courses from "../components/Courses";
 import Dashboard from "../components/Dashboard";
 import SignUpPage from "../components/SignUpPage";
 import LogInPage from "../components/LogInPage";
+import LogOutPage from "../components/LogOutPage";
 import NotFound from "../components/NotFound";
 import TestFile from "../components/TestFile";
 
@@ -19,6 +20,7 @@ const AppRouter = () => {
           <Route path="/dashboard" exact component={Dashboard} />
           <Route path="/signup" exact component={SignUpPage} />
           <Route path="/courses" exact component={Courses} />
+          <Route path="/logout" exact component={LogOutPage} />
           {/**<PrivateRoute path = "/courses/:id" exact component = {CoursePage}/>
                     <PrivateRoute path = "/students/edit/:id" component={EditStudentContact} />
                     <PrivateRoute path = "/students/content/:id" component = {StudentPersonalPage}/> */}
