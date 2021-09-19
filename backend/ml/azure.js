@@ -89,22 +89,22 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
   }
 
   for (const row of background_info) {
-    class_feat[row[0]]["age"] = (row[3] - age_metrics[0]) / age_metrics[1];
-    class_feat[row[0]]["upper"] =(row[4] - upper_metrics[0]) / upper_metrics[1];
-    class_feat[row[0]]["lower"] = (row[5] - lower_metrics[0]) / lower_metrics[1];
+    class_feat[row.user_id]["age"] = (row.age - age_metrics[0]) / age_metrics[1];
+    class_feat[row.user_id]["upper"] =(row.num_upper_taken - upper_metrics[0]) / upper_metrics[1];
+    class_feat[row.user_id]["lower"] = (row.num_lower_taken - lower_metrics[0]) / lower_metrics[1];
   }
 
   for (const row of info) {
     // Have class_feat.time be a list of all the times this user spent on each assignment
-    if (!("time" in class_feat[row[0]])){
-      class_feat[row[0]]["time"] = [(row[2] - time_metrics[row[1]][0]) / time_metrics[row[1]][1]];
+    if (!("time" in class_feat[row.user_id])){
+      class_feat[row.user_id]["time"] = [(row.time - time_metrics[row.assignment_id][0]) / time_metrics[row.assignment_id][1]];
     } else {
-      class_feat[row[0]]["time"].push((row[2] - time_metrics[row[1]][0]) / time_metrics[row[1]][1]);
+      class_feat[row.user_id]["time"].push((row.time - time_metrics[row.assignment_id][0]) / time_metrics[row.assignment_id][1]);
     }
-    if (!("days" in class_feat[row[0]])){
-      class_feat[row[0]]["days"] = [(row[4] - days_metrics[row[1]][0]) / days_metrics[row[1]][1]];
+    if (!("days" in class_feat[row.user_id])){
+      class_feat[row.user_id]["days"] = [(row.days - days_metrics[row.assignment_id][0]) / days_metrics[row.assignment_id][1]];
     } else {
-      class_feat[row[0]]["days"].push((row[4] - days_metrics[row[1]][0]) / days_metrics[row[1]][1]);
+      class_feat[row.user_id]["days"].push((row.days - days_metrics[row.assignment_id][0]) / days_metrics[row.assignment_id][1]);
     }
   }
 
