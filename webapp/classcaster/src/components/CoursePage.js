@@ -8,18 +8,25 @@ const CoursePage = (props) => {
   const courseId = props.match.params.id;
   const [isLoading, setIsLoading] = useState(true);
   const [assignments, setAssignments] = useState([]);
-  useEffect(async () => {
+  useEffect(() => {
     if (!isLoading) return;
-    const res = await axios({
-      method: "post",
-      url: "/api",
-      data: {
-        action: "getCourseAssignments",
-        course: courseId,
-      },
-    });
-    setAssignments(res);
-  }, [isLoading]);
+    (async () => {
+      const res = await axios({
+        method: "POST",
+        url: "/api",
+        data: {
+          type: "getCourseAssignments",
+          course: courseId,
+        },
+      });
+      setTimeout(() => {
+        setIsLoading(false);
+        setTimeout(() => {
+          setAssignments(res.data);
+        }, 350);
+      }, 150);
+    })();
+  }, [isLoading, courseId]);
 
   const tempAssignments = [
     {
@@ -48,8 +55,14 @@ const CoursePage = (props) => {
     },
   ];
 
-  if (!isLoading) {
-    return <PageSpinner text="Loading course..." />;
+  let daysCreated = [17, 12, 7, 5].map((x) => "2021-09-" + x.toString());
+
+  if (isLoading || !assignments.length) {
+    return (
+      <PageSpinner
+        text={!isLoading ? "Running inference..." : "Loading assignments..."}
+      />
+    );
   } else {
     /*
         assignment {
@@ -64,17 +77,20 @@ const CoursePage = (props) => {
       <div>
         <Center>
           <Heading mt={5} fontSize={"5xl"}>
-            Course Page
+            Assignments
           </Heading>
         </Center>
         <Grid h={"100vh"} p={50} templateColumns="repeat(2, 1fr)">
-          {tempAssignments.map((item, i) => (
-            <GridItem key={"griditem" + i}>
-              <Center>
-                <AssignmentItem {...item} />
-              </Center>
-            </GridItem>
-          ))}
+          {assignments.map((item, i) => {
+            item.daysCreated = daysCreated[i % daysCreated.length]; // fixme
+            return (
+              <GridItem key={"griditem" + i}>
+                <Center>
+                  <AssignmentItem {...item} />
+                </Center>
+              </GridItem>
+            );
+          })}
         </Grid>
       </div>
     );
