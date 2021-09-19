@@ -67,7 +67,7 @@ function AssignmentItem(props) {
             <Stack direction={"row"} flex={true} alignItems={"center"} mt={1}>
               <WarningTwoIcon />
               <Text fontSize="lg">
-                <b>{props.forecastTime}</b> days forecast time
+                <b>{props.forecastTime} hours</b> forecast time
               </Text>
             </Stack>
           ) : (
