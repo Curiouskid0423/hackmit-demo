@@ -50,6 +50,10 @@ router.post("/api", async (req, res, next) => {
     const { assignment } = req.body;
     const output = await tangram.updatePredictedScores(assignment);
     return res.json(output);
+  } else if (type == "predictTangram") {
+    const { user, assignment } = req.body;
+    const output = await tangram.getPredictedScore(user, assignment);
+    return res.json(output);
   }
 });
 

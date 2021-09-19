@@ -84,11 +84,13 @@ async function updatePredictedScores(assignment_id) {
     let c = assignment_id+"_complete";
     if (value[c] == true) {
       data.push(value);
+    } else {
+      console.log(uid)
     }
 
   }
 
-  console.log(data);
+  // console.log(class_feat);
 
   csvWriter
   .writeRecords(data)
