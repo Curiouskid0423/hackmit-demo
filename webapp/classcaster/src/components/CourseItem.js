@@ -1,9 +1,8 @@
 import React from "react";
 import {
-    Heading,
-    MdSettings,
+    Badge,
     LinkBox,
-    Center,
+    Box,
     Text,
     LinkOverlay,
     useColorModeValue,
@@ -14,11 +13,12 @@ import {
  * will be a pop up element on Course Directory page).
  */
   
-  export default function CourseItem() {
+  export default function CourseItem(props) {
     return (
-      <Center py={2}>
+      <Box py={2}>
         <LinkBox
-        maxW={'80%'}
+        height={"11rem"}
+        maxW={'100%'}
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}
@@ -27,9 +27,12 @@ import {
         textAlign={'center'}>
 
         <LinkOverlay href="/course/23" maxWidth={"100%"}>
-            <Heading fontSize={'2xl'} fontFamily={'body'} px={3} py={2}>
-                EECS16B 
-            </Heading>
+            <Badge borderRadius="full" px="2" colorScheme="blue" fontSize="m" p={".1rem 1.5rem .1rem 1.5rem"}>
+              {props.courseNum}
+            </Badge>
+            <Text fontSize={'xl'} fontFamily={'body'} px={3} py={5}>
+              {props.courseName} 
+            </Text>
             <Text
                 textAlign={'center'}
                 color={useColorModeValue('gray.700', 'gray.400')}
@@ -37,6 +40,6 @@ import {
             </Text>
         </LinkOverlay>
         </LinkBox>
-      </Center>
+      </Box>
     );
   }
