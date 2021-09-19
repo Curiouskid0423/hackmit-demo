@@ -13,8 +13,30 @@ async function updatePredictedScores(assignment_id) {
   const info = await db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
   const background_info = await db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
 
+  const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+  const csvWriter = createCsvWriter({
+    path: 'out.csv',
+    header: [
+      {id: 'race', title: 'race'},
+      {id: 'gender', title: 'gender'},
+      {id: 'age', title: 'age'},
+      {id: 'upper', title: 'upper'},
+      {id: 'lower', title: 'lower'},
+      {id: 'd2eb5e79-2a94-43db-b586-f522449f489e_time', title: 'd2eb5e79-2a94-43db-b586-f522449f489e_time'}, 
+      {id: 'd2eb5e79-2a94-43db-b586-f522449f489e_days', title: 'd2eb5e79-2a94-43db-b586-f522449f489e_days'} ,
+      {id: 'd2eb5e79-2a94-43db-b586-f522449f489e_complete', title: 'd2eb5e79-2a94-43db-b586-f522449f489e_complete'},
+      {id: '6856acb6-248f-4596-a259-f52a472df78e_time', title: '6856acb6-248f-4596-a259-f52a472df78e_time'},
+      {id: '6856acb6-248f-4596-a259-f52a472df78e_days', title: '6856acb6-248f-4596-a259-f52a472df78e_days'} ,
+      {id: '6856acb6-248f-4596-a259-f52a472df78e_complete', title: '6856acb6-248f-4596-a259-f52a472df78e_complete'} ,
+      {id: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_time', title: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_time'} ,
+      {id: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_days', title: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_days'},
+      {id: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_complete', title: 'dda9d40a-6161-4b4f-b82b-72166ad7b476_complete'} ,
+      {id: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_time', title: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_time'} ,
+      {id: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_days', title: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_days'} ,
+      {id: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_complete', title: 'e19831e8-f092-4e94-bcc0-25ce5f4cfbf5_complete'} 
+    ]
+  });
 
-  
   var race_map = {
     "white": 0,
     "black": 1,
@@ -56,8 +78,33 @@ async function updatePredictedScores(assignment_id) {
     class_feat[row.user_id][(row.assignment_id)+"_complete"] = complete;
   }
 
-  console.log(class_feat);
+  var data = [];
+  for (const [uid, value] of Object.entries(class_feat)) {
+    // If uid didn't complete the assignment, don't push
+    let c = assignment_id+_complete;
+    if (value[c] == true) {
+      data.push(value);
+    }
 
+  }
+
+  console.log(data);
+
+  csvWriter
+  .writeRecords(data)
+  .then(()=> console.log('The CSV file was written successfully'));
+
+  // var exec = require('child_process').exec, child;
+
+  // child = exec('tangram train --file out.csv --target diagnosis',
+  //   function (error, stdout, stderr) {
+  //       console.log('stdout: ' + stdout);
+  //       console.log('stderr: ' + stderr);
+  //       if (error !== null) {
+  //             console.log('exec error: ' + error);
+  //       }
+  //   });
+  // child();
 
 }
 
