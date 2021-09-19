@@ -42,6 +42,9 @@ app.use(passport.authenticate("session"));
 
 app.use(authRouter);
 
+const apiRouter = require("./routes/api");
+app.use(apiRouter);
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

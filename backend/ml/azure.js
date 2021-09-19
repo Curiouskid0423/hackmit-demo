@@ -1,6 +1,6 @@
 const db = require("../db/index");
 
-export async function getRecommendedGroup(user_id, course_id) {
+async function getRecommendedGroup(user_id, course_id) {
   // TODO: Return recommended group for user with id = user_id in course with id = course_id
 
   const info = db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(complete) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, complete, COUNT(*) as num_entries FROM classcluster_schema.times GROUP BY (user_id, assignment_id, complete)) GROUP BY (user_id, assignment_id)", []);
@@ -27,3 +27,5 @@ export async function getRecommendedGroup(user_id, course_id) {
   // xhr.send(data);
 
 }
+
+module.exports.getRecommendedGroup = getRecommendedGroup;

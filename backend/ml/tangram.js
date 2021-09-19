@@ -1,6 +1,6 @@
 const db = require("../db/index");
 
-export async function updatePredictedScores() {
+async function updatePredictedScores() {
   // TODO: Retrain model
   // To run a query, do:
   // const output = db.getRows(YOUR_SQL_QUERY, []);
@@ -12,6 +12,9 @@ export async function updatePredictedScores() {
 
 }
 
-export async function getPredictedScore(user_id, assignment_id) {
+async function getPredictedScore(user_id, assignment_id) {
   // TODO: Return predicted score for user with id = user_id and assignment with id = assigment_id
 }
+
+module.exports.updatePredictedScores = updatePredictedScores;
+module.exports.getPredictedScore = getPredictedScore;
