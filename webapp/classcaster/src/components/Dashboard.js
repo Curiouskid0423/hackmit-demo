@@ -28,7 +28,7 @@ import {
     useDisclosure,
     useColorModeValue,
 } from "@chakra-ui/react";
-import { ChatIcon } from "@chakra-ui/icons";
+import { ChatIcon, AddIcon } from "@chakra-ui/icons";
 import { MdBuild } from "react-icons/md";
 import CourseItem from "./CourseItem";
 import StudentCard from "./StudentCard";
@@ -215,7 +215,15 @@ const Dashboard = (props) => {
                     </Modal>
                     <GroupRec />
 
+                    <Button 
+                        leftIcon={<AddIcon />} colorScheme="teal" 
+                        variant="outline" minW="8rem" mt={3}
+                        >
+                        Record Progress
+                    </Button>
+
                 </Box>
+                
 
             </GridItem>
             <GridItem rowSpan={2} colSpan={6}>
