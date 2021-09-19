@@ -54,16 +54,20 @@ const studentList = [
 const GroupRec = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isLoading, setIsLoading] = useState(true);
-    setTimeout(() => {
-        setIsLoading(false);
-    }, 5000);
+    
+    
 
     const initialRef = React.useRef();
     const finalRef = React.useRef();
     return (<Box>
         <Button 
                 leftIcon={<ChatIcon />} colorScheme="orange" 
-                variant="outline" minW="8rem" mt={3} onClick={onOpen}
+                variant="outline" minW="8rem" mt={3} onClick={()=> {
+                    onOpen();
+                    setTimeout(() => {
+                        setIsLoading(false);
+                    }, 3500);
+                }}
                 >
                         Group Recommendation
                     </Button>
