@@ -75,7 +75,7 @@ router.post(
   "/login/password",
   passport.authenticate("local", {
     successRedirect:
-      "/?_msg=Authenticated%20user.&_title=Success!&_status=success",
+      "/dashboard?_msg=Authenticated%20user.&_title=Success!&_status=success",
     failureRedirect:
       "/login?_msg=Invalid%20credentials.&_title=Failure&_status=error",
     failureMessage: true,

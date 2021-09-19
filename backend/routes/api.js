@@ -6,20 +6,40 @@ var router = express.Router();
 
 router.post("/api", async (req, res, next) => {
   const { type } = req.body;
+  const userId = (req.user_ ?? {}).id ?? "000c352d-6f85-4d22-8717-a95e4e9c59a1"; // fixme: req.user to use live auth
+  console.log(req.isAuthenticated(), userId);
   if (type === "getCourseAssignments") {
     // name, numCompleted, numStudents, forecastTime
     const { course } = req.body;
-    console.log(req.user);
-    const { id } = req.user;
-    const rows = db.getRows(
-      `SELECT assignment_id, count(*) AS numStudents, count(*) filter (where completed) AS numCompleted FROM
-       (
-           SELECT assignment_id, user_id, MAX(completed) AS completed FROM classcaster_schema.times
-           GROUP BY (assignment_id, user_id)
-       )
-       GROUP BY (assignment_id)`,
-      []
+    const assignments = await db.getRows(
+      "SELECT id, name FROM classcaster_schema.assignments WHERE course_id = $1",
+      [course]
     );
+    const assignmentById = {};
+    for (const assignment of assignments) {
+      assignmentById[assignment.id] = assignment.name;
+    }
+    const assignments_str = assignments
+      .map((x) => `'${x.id.toString()}'`)
+      .join(", ");
+    const rows = await db.getRows(
+      `
+        SELECT assignment_id, count(*) AS numStudents, count(*) filter (where completed) AS numCompleted, MAX(completed) filter (where user_id = $1) AS completed FROM (
+            SELECT assignment_id, user_id, MAX(completed) AS completed FROM classcaster_schema.times
+            WHERE assignment_id IN (${assignments_str})
+            GROUP BY (assignment_id, user_id)
+        ) GROUP BY (assignment_id);
+        `,
+      [userId]
+    );
+    console.log(assignmentById);
+    rows.forEach((row) => {
+      row.numStudents = parseInt(row.numstudents);
+      row.numCompleted = parseInt(row.numcompleted);
+      delete row.numstudents;
+      delete row.numcompleted;
+      row.name = assignmentById[row.assignment_id];
+    });
     return res.json(rows);
   } else if (type === "runAzurePredictions") {
     const { user, course } = req.body;
