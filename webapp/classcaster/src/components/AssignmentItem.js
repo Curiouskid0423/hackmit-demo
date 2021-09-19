@@ -4,14 +4,6 @@ import moment from "moment";
 import { CheckIcon, WarningTwoIcon } from "@chakra-ui/icons";
 
 function AssignmentItem(props) {
-  /**
-     * assignment {
-            name: (Assignment Name),
-            num_completed: <INT>, // have already completed
-            num_students: <INT>, // total
-            forecasted_time: <FLOAT>
-        }
-     */
   const isNew =
     moment(props.daysCreated).diff(moment.now(), "days") >= -3 ? false : true;
   return (

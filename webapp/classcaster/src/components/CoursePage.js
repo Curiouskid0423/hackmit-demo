@@ -65,15 +65,6 @@ const CoursePage = (props) => {
       />
     );
   } else {
-    /*
-        assignment {
-            name: (Assignment Name),
-            num_completed: <INT>, // have already completed
-            num_students: <INT>, // total
-            forecasted_time: <FLOAT> // in hours, for students like you (predicted via gradient-boosted decision trees :D)
-        }
-        assignments: array of type 'assignment'
-        */
     return (
       <div>
         <Center>

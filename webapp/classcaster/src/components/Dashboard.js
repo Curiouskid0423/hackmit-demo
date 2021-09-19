@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { 
     Badge,
     Center,
@@ -22,6 +22,8 @@ import {
     ModalCloseButton,
     Input, 
     Select,
+    Spinner,
+    VStack,
     useBreakpointValue, 
     useDisclosure,
     useColorModeValue,
@@ -29,10 +31,80 @@ import {
 import { ChatIcon } from "@chakra-ui/icons";
 import { MdBuild } from "react-icons/md";
 import CourseItem from "./CourseItem";
+import StudentCard from "./StudentCard";
+
+// >>>>> FIXME >>>>
+const studentList = [
+    {
+        name: "Test Senior 547",
+        ratio: 95,
+    },{
+        name: "Test Sophomore 129",
+        ratio: 92,
+    },{
+        name: "Test Junior 732",
+        ratio: 81,
+    },{
+        name: "Test Junior 411",
+        ratio: 66,
+    },
+]
+// >>>>> FIXME >>>>
+
+const GroupRec = (props) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [isLoading, setIsLoading] = useState(true);
+    setTimeout(() => {
+        setIsLoading(false);
+    }, 5000);
+
+    const initialRef = React.useRef();
+    const finalRef = React.useRef();
+    return (<Box>
+        <Button 
+                leftIcon={<ChatIcon />} colorScheme="orange" 
+                variant="outline" minW="8rem" mt={3} onClick={onOpen}
+                >
+                        Group Recommendation
+                    </Button>
+
+                    <Modal
+                        initialFocusRef={initialRef}
+                        finalFocusRef={finalRef}
+                        isOpen={isOpen}
+                        onClose={onClose}
+                    >
+                        <ModalOverlay />
+                        <ModalContent>
+                        <form method="POST" action="/login/password">
+                            <ModalHeader>
+                            Your Study Group 
+                            </ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody pb={6}>
+                            <Center>
+                               {
+                                   isLoading?  <Spinner color="red.500" /> : <VStack>{studentList.map((item) => (
+                                    <StudentCard {...item}/>
+                               ))}</VStack>
+                               }
+                            </Center>
+                            </ModalBody>
+
+                            <ModalFooter>
+                            <Button type="submit" colorScheme="blue" mr={3}>
+                                Save
+                            </Button>
+                            <Button onClick={onClose}>Cancel</Button>
+                            </ModalFooter>
+                        </form>
+                        </ModalContent>
+                    </Modal>
+    </Box>);
+}
 
 const Dashboard = (props) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-
     const initialRef = React.useRef();
     const finalRef = React.useRef();
 
@@ -88,11 +160,12 @@ const Dashboard = (props) => {
                             <ModalCloseButton />
                             <ModalBody pb={6}>
                             <FormControl>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Age</FormLabel>
                                 <Input
                                 ref={initialRef}
-                                name="username"
-                                placeholder="Username"
+                                name="age"
+                                type="number"
+                                placeholder="21"
                                 />
                             </FormControl>
 
@@ -140,13 +213,8 @@ const Dashboard = (props) => {
                         </form>
                         </ModalContent>
                     </Modal>
+                    <GroupRec />
 
-                    <Button 
-                        leftIcon={<ChatIcon />} colorScheme="orange" 
-                        variant="outline" minW="8rem" mt={3}
-                        >
-                        Group Recommendation
-                    </Button>
                 </Box>
 
             </GridItem>
