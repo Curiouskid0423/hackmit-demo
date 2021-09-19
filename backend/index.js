@@ -1,7 +1,12 @@
 const express = require("express");
 const expressSession = require("express-session");
+const cors = require("express-cors");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const path = require("path");
+const logger = require("morgan");
+const db = require("./db/index");
+
+db.init();
 
 require("dotenv").config();
 
@@ -10,47 +15,32 @@ const port = process.env.PORT || "8000";
 
 const session = {
   secret: process.env.SESSION_SECRET,
-  cookie: {},
   resave: false,
   saveUninitialized: false,
 };
 
-passport.use(
-  new LocalStrategy(function (username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) {
-        return done(err);
-      }
-      if (!user) {
-        return done(null, false);
-      }
-      if (!user.verifyPassword(password)) {
-        return done(null, false);
-      }
-      return done(null, user);
-    });
-  })
-);
+const authRouter = require("./routes/auth");
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "public")));
 
+app.use(cors());
+app.use(logger("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(expressSession(session));
+app.use(function (req, res, next) {
+  var msgs = req.session.messages || [];
+  res.locals.messages = msgs;
+  res.locals.hasMessages = !!msgs.length;
+  req.session.messages = [];
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.authenticate("session"));
 
-passport.serializeUser(function (user, cb) {
-  process.nextTick(function () {
-    cb(null, { id: user.id, username: user.username });
-  });
-});
-
-passport.deserializeUser(function (user, cb) {
-  process.nextTick(function () {
-    return cb(null, user);
-  });
-});
+app.use(authRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

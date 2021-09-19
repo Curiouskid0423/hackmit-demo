@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 
 require("dotenv").config();
 
-export class Client {
+class Client {
   constructor() {
     this.pool = null;
     this.client = null;
@@ -13,7 +13,7 @@ export class Client {
   async init() {
     // Run the transactions in the connection pool
     const URI = {
-      connectionString: process.env.get("CC_CONN_STR"),
+      connectionString: process.env.CC_CONN_STR,
     };
     var connectionString;
     // Expand $env:appdata environment variable in Windows connection string
@@ -29,6 +29,8 @@ export class Client {
         "$HOME",
         process.env.HOME
       );
+    } else {
+      connectionString = URI.connectionString;
     }
 
     var config = parse(connectionString);
@@ -39,6 +41,7 @@ export class Client {
 
     // Connect to database
     this.client = await this.pool.connect();
+    await this.client.query("USE classcaster");
 
     // // Callback
     // function cb(err, res) {
@@ -65,7 +68,7 @@ export class Client {
     // await retryTxn(0, 15, client, deleteAccounts, cb);
   }
 
-  async retryTxn(n, max, client, operation, callback) {
+  async retryTxn(n, max, client, operation) {
     await client.query("BEGIN;");
     while (true) {
       n++;
@@ -74,12 +77,12 @@ export class Client {
       }
 
       try {
-        await operation(client, callback);
+        const ret = await operation(client);
         await client.query("COMMIT;");
-        return;
+        return ret;
       } catch (err) {
         if (err.code !== "40001") {
-          return callback(err);
+          throw err;
         } else {
           console.log("Transaction failed. Retrying transaction.");
           console.log(err.message);
@@ -92,10 +95,21 @@ export class Client {
     }
   }
 
-  async exec(operation, callback) {
-    await this.retryTxn(0, 15, this.client, operation, callback);
+  async exec(operation, retries = 15) {
+    return await this.retryTxn(0, retries, this.client, operation);
+  }
+
+  async get(text, values) {
+    return (await this.client.query(text, values)).rows[0];
+  }
+
+  async run(text, values, retries = 15) {
+    const cb = (client) => client.query(text, values);
+    return await this.exec(cb);
   }
 }
+
+module.exports = new Client();
 
 /* // This function updates the values of two rows, simulating a "transfer" of funds.
 async function transferFunds(client, callback) {
