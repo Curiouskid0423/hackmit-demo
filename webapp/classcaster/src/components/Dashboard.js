@@ -1,7 +1,5 @@
 import React from "react";
-import { Grid, GridItem, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { Grid, GridItem, Text, useBreakpointValue, Heading, Square } from "@chakra-ui/react";
 import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
@@ -45,7 +43,9 @@ const Dashboard = (props) => {
                     height = {"100%"}
                 >
                     <GridItem rowSpan={1} colSpan={2} bg={'blue'} p={7}>
-                        <Text fontSize={"5xl"}>70%</Text>
+                        <Square h={"100%"} w="100%">
+                            <Heading fontSize={"6xl"}>70%</Heading>
+                        </Square>
                     </GridItem>
                     <GridItem rowSpan={1} colSpan={3} bg={'blue'}/>
                 </Grid>
@@ -56,16 +56,37 @@ const Dashboard = (props) => {
             <GridItem rowSpan={5} colSpan={6}>
                 <Grid 
                     templateRows="repeat(4, 1fr)" 
-                    templateColumns="repeat(2, 1fr)" 
+                    templateColumns="repeat(3, 1fr)" 
                     p = {3} 
                     gap = {4} 
                     height = {"100%"}
                 >
                     {
                         <GridItem rowSpan={1} colSpan={1}> 
-                            <CourseItem />
+                            <CourseItem 
+                                courseNum={"EECS16B"} 
+                                courseName={"Designing Information Devices and Systems II"}
+                            />
                         </GridItem> 
                     }
+                        <GridItem rowSpan={1} colSpan={1}> 
+                            <CourseItem 
+                                courseNum={"CS189"} 
+                                courseName={"Intro to Machine Learning"}
+                            />
+                        </GridItem> 
+                        <GridItem rowSpan={1} colSpan={1}> 
+                            <CourseItem 
+                                courseNum={"CS194"} 
+                                courseName={"Intro to Parallel Computing"}
+                            />
+                        </GridItem> 
+                        <GridItem rowSpan={1} colSpan={1}> 
+                            <CourseItem 
+                                courseNum={"PHILO 3"} 
+                                courseName={"Nature of Mind"}
+                            />
+                        </GridItem> 
                     
                 </Grid>
             </GridItem>
