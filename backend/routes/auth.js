@@ -8,18 +8,18 @@ const db = require("../db/index");
 passport.use(
   new LocalStrategy(async (username, password, cb) => {
     try {
-      const res = await db.get(
+      const row = await db.get(
         "SELECT * FROM classcaster_schema.users WHERE username = $1",
         [username]
       );
-      if (!res) {
+      if (!row) {
         return cb(null, false, {
           message: "Incorrect username or password.",
         });
       }
       crypto.pbkdf2(
         password,
-        row.salt,
+        Buffer.from(JSON.parse(row.salt).data),
         10000,
         32,
         "sha256",
@@ -27,7 +27,12 @@ passport.use(
           if (err) {
             return cb(err);
           }
-          if (!crypto.timingSafeEqual(row.password_hash, hashedPassword)) {
+          if (
+            !crypto.timingSafeEqual(
+              Buffer.from(JSON.parse(row.password_hash).data),
+              hashedPassword
+            )
+          ) {
             return cb(null, false, {
               message: "Incorrect username or password.",
             });
@@ -69,15 +74,17 @@ router.get("/login", function (req, res, next) {
 router.post(
   "/login/password",
   passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
+    successRedirect:
+      "/?_msg=Authenticated%20user.&_title=Success!&_status=success",
+    failureRedirect:
+      "/login?_msg=Invalid%20credentials.&_title=Failure&_status=error",
     failureMessage: true,
   })
 );
 
 router.post("/logout", function (req, res, next) {
   req.logout();
-  res.redirect("/");
+  res.redirect("/?_msg=Logged%20you%20out!&_title=Success&_status=success");
 });
 
 router.get("/signup", function (req, res, next) {
@@ -122,7 +129,9 @@ router.post("/signup", function (req, res, next) {
             return next(err);
           }
 
-          res.redirect("/dashboard");
+          res.redirect(
+            "/dashboard?_msg=Registered%20user.&_title=Success!&_status=success"
+          );
         });
       } catch (err) {
         return next(err);

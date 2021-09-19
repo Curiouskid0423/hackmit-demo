@@ -1,18 +1,43 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  useLocation,
+} from "react-router-dom";
 import Courses from "../components/Courses";
 import Dashboard from "../components/Dashboard";
 import SignUpPage from "../components/SignUpPage";
 import LogInPage from "../components/LogInPage";
 import LogOutPage from "../components/LogOutPage";
 import NotFound from "../components/NotFound";
+import { useToast } from "@chakra-ui/toast";
 
 // export const history = createBrowserHistory();
+
+const RouteListener = () => {
+  let location = useLocation();
+  const toast = useToast();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.has("_msg")) {
+      toast({
+        title: params.get("_title") ?? "ClassCaster Alert",
+        description: params.get("_msg"),
+        status: params.get("_status") ?? "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [location, toast]);
+  return <></>;
+};
 
 const AppRouter = () => {
   return (
     <Router>
       <div>
+        <RouteListener />
         <Switch>
           <Route path="/" exact component={LogInPage} />
           <Route path="/login" exact component={LogInPage} />

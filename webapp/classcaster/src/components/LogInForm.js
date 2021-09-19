@@ -38,26 +38,32 @@ export default function LogInForm() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Log In</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <FormControl>
-              <FormLabel>Username</FormLabel>
-              <Input ref={initialRef} placeholder="Username" />
-            </FormControl>
+          <form method="POST" action="/login/password">
+            <ModalHeader>Log In</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody pb={6}>
+              <FormControl>
+                <FormLabel>Username</FormLabel>
+                <Input
+                  ref={initialRef}
+                  name="username"
+                  placeholder="Username"
+                />
+              </FormControl>
 
-            <FormControl mt={4}>
-              <FormLabel>Password</FormLabel>
-              <Input placeholder="Password" type="password" />
-            </FormControl>
-          </ModalBody>
+              <FormControl mt={4}>
+                <FormLabel>Password</FormLabel>
+                <Input placeholder="Password" name="password" type="password" />
+              </FormControl>
+            </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3}>
-              Login
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
+            <ModalFooter>
+              <Button type="submit" colorScheme="blue" mr={3}>
+                Login
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </form>
         </ModalContent>
       </Modal>
     </div>
