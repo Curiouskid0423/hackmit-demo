@@ -99,8 +99,12 @@ class Client {
     return await this.retryTxn(0, retries, this.client, operation);
   }
 
-  async get(text, values) {
-    return (await this.client.query(text, values)).rows[0];
+  async getRows(text, values = []) {
+    return (await this.client.query(text, values)).rows;
+  }
+
+  async get(text, values = []) {
+    return (await this.getRows(text, values))[0];
   }
 
   async run(text, values, retries = 15) {
