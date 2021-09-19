@@ -13,8 +13,9 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     "black": 1,
     "asian": 2,
     "hawaiian": 3,
-    "other": 4,
-    "not_provided": 5
+    "american_indian": 4,
+    "other": 5,
+    "not_provided": 6
   }
   var gender_map = {
     "male": 0,
@@ -56,12 +57,19 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     } else {
       days[row.assignment_id].push(parseInt(row.days));
     }
-    var complete_amt = 1 ? row.complete : 0;
-    if (!row.user_id in completes) {
-      completes[row.user_id] = complete_amt;
+
+    if (!(row.user_id in completes)) {
+      if (row.complete) {
+        completes[row.user_id] = 1;
+      } else {
+        completes[row.user_id] = 0;
+      }
     } else {
-      completes[row.user_id] += complete_amt;
+      if (row.complete) {
+        (completes[row.user_id])++;
+      }
     }
+
   }
 
   // Calculate mean and std
@@ -113,6 +121,8 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
     values["time"] = math.mean(values["time"]);
     values["days"] = math.mean(values["days"]);
   }
+
+  console.log(class_feat);
 
   // Setting study groups of 3 for now; can change later.
   const res = await axios.post("https://hackmit-1.azurewebsites.net", {
