@@ -81,7 +81,7 @@ async function updatePredictedScores(assignment_id) {
   var data = [];
   for (const [uid, value] of Object.entries(class_feat)) {
     // If uid didn't complete the assignment, don't push
-    let c = assignment_id+_complete;
+    let c = assignment_id+"_complete";
     if (value[c] == true) {
       data.push(value);
     }
@@ -94,22 +94,59 @@ async function updatePredictedScores(assignment_id) {
   .writeRecords(data)
   .then(()=> console.log('The CSV file was written successfully'));
 
-  // var exec = require('child_process').exec, child;
+  var exec = require('child_process').exec, child;
+  let cmd = 'tangram train --file out.csv --target ' + assignment_id;
 
-  // child = exec('tangram train --file out.csv --target diagnosis',
-  //   function (error, stdout, stderr) {
-  //       console.log('stdout: ' + stdout);
-  //       console.log('stderr: ' + stderr);
-  //       if (error !== null) {
-  //             console.log('exec error: ' + error);
-  //       }
-  //   });
-  // child();
-
+  child = exec(cmd,
+    function (error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+              console.log('exec error: ' + error);
+        }
+    });
+  child();
 }
 
-async function getPredictedScore(user_id, assignment_id) {
-  // TODO: Return predicted score for user with id = user_id and assignment with id = assigment_id
+async function getPredictedScore(user_id) {
+  // TODO: Return predicted score for user with id = user_id
+  // const fs = require("fs");
+  // const path = require("path");
+  // const tangram = require("@tangramdotdev/tangram");
+
+  // const info = await db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
+  // const background_info = await db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
+  
+  // // Get the path to the .tangram file.
+  // const modelPath = path.join("out.tangram");
+  // // Load the model from the path.
+  // const modelData = fs.readFileSync(modelPath);
+  // const model = new tangram.Model(modelData.buffer);
+  
+  // // Create an example input matching the schema of the CSV file the model was trained on.
+  // // Here the data is just hard-coded, but in your application you will probably get this
+  // // from a database or user input.
+  // const input = {
+  //   age: 63,
+  //   gender: "male",
+  //   chest_pain: "typical angina",
+  //   resting_blood_pressure: 145,
+  //   cholesterol: 233,
+  //   fasting_blood_sugar_greater_than_120: "true",
+  //   resting_ecg_result: "probable or definite left ventricular hypertrophy",
+  //   exercise_max_heart_rate: 150,
+  //   exercise_induced_angina: "no",
+  //   exercise_st_depression: 2.3,
+  //   exercise_st_slope: "downsloping",
+  //   fluoroscopy_vessels_colored: "0",
+  //   thallium_stress_test: "fixed defect",
+  // };
+  
+  // // Make the prediction!
+  // const output = model.predict(input);
+  
+  // // Print the output.
+  // console.log("Output:", output);
 }
 
 module.exports.updatePredictedScores = updatePredictedScores;
