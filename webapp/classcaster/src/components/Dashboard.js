@@ -1,5 +1,7 @@
 import React from "react";
 import { Grid, GridItem, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
@@ -34,8 +36,23 @@ const Dashboard = (props) => {
                     </Text>
                 </Heading>
             </GridItem>
-            <GridItem rowSpan={2} colSpan={3} bg="papayawhip" />
-            <GridItem rowSpan={2} colSpan={3} bg="papayawhip" />
+            <GridItem rowSpan={2} colSpan={3} bg="papayawhip">
+                <Grid 
+                    templateRows="repeat(1, 1fr)" 
+                    templateColumns="repeat(5, 1fr)" 
+                    p = {3} 
+                    gap = {4} 
+                    height = {"100%"}
+                >
+                    <GridItem rowSpan={1} colSpan={2} bg={'blue'} p={7}>
+                        <Text fontSize={"5xl"}>70%</Text>
+                    </GridItem>
+                    <GridItem rowSpan={1} colSpan={3} bg={'blue'}/>
+                </Grid>
+            </GridItem>
+            <GridItem rowSpan={2} colSpan={3} bg="papayawhip">
+            
+            </GridItem>
             <GridItem rowSpan={5} colSpan={6}>
                 <Grid 
                     templateRows="repeat(4, 1fr)" 

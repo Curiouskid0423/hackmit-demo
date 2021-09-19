@@ -5,9 +5,8 @@ import {
   Switch,
   useLocation,
 } from "react-router-dom";
-import Courses from "../components/Courses";
+import CoursePage from "../components/CoursePage";
 import Dashboard from "../components/Dashboard";
-import SignUpPage from "../components/SignUpPage";
 import LogInPage from "../components/LogInPage";
 import LogOutPage from "../components/LogOutPage";
 import NotFound from "../components/NotFound";
@@ -42,9 +41,9 @@ const AppRouter = () => {
           <Route path="/" exact component={LogInPage} />
           <Route path="/login" exact component={LogInPage} />
           <Route path="/dashboard" exact component={Dashboard} />
-          <Route path="/courses" exact component={Courses} />
           <Route path="/logout" exact component={LogOutPage} />
-          {/**<PrivateRoute path = "/courses/:id" exact component = {CoursePage}/>
+          <Route path = "/course/:id" exact component = {CoursePage}/>
+          {/**
             <PrivateRoute path = "/students/edit/:id" component={EditStudentContact} />
             <PrivateRoute path = "/students/content/:id" component = {StudentPersonalPage}/> */}
           <Route component={NotFound} />
