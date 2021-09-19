@@ -1,5 +1,6 @@
 const db = require("../db/index");
 const axios = require('axios');
+const math = require('mathjs');
 
 async function getRecommendedGroup(user_id, course_id, include_background=1) {
   // TODO: Return recommended group for user with id = user_id in course with id = course_id
@@ -11,14 +12,12 @@ async function getRecommendedGroup(user_id, course_id, include_background=1) {
   // Lists of ages...etc for each user_id
   var ages = [];
   var uppers = [];
-  var lower = [];
+  var lowers = [];
   // Dictionaries with assignments as keys, and lists of times..etc for each user_id as values
   // Complete is a dict with uid as keys and # of completed assignments as values
   var times = {};
   var days = {};
   var completes = {};
-
-  // TODO: deal with completes
 
   // Collect values for mean and std
   for (const row in background_info.rows) {
