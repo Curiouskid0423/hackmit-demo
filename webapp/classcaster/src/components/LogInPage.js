@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@chakra-ui/react"
 import { ArrowForwardIcon } from "@chakra-ui/icons"; 
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, withRouter } from "react-router-dom";
 
 
 const LogInPage = (props) => {
@@ -13,11 +13,11 @@ const LogInPage = (props) => {
                 <Button 
                     rightIcon={<ArrowForwardIcon />} 
                     colorScheme="blue">
-                Button  
+                    Button  
                 </Button>
             </RouterLink>
         </div>
     );
 }
 
-export default LogInPage;
+export default withRouter(LogInPage);
