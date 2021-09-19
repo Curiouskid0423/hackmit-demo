@@ -6,7 +6,6 @@ import SignUpPage from "../components/SignUpPage";
 import LogInPage from "../components/LogInPage";
 import LogOutPage from "../components/LogOutPage";
 import NotFound from "../components/NotFound";
-import TestFile from "../components/TestFile";
 
 // export const history = createBrowserHistory();
 
@@ -15,15 +14,14 @@ const AppRouter = () => {
     <Router>
       <div>
         <Switch>
-          <Route path="/" exact component={TestFile} />
+          <Route path="/" exact component={LogInPage} />
           <Route path="/login" exact component={LogInPage} />
           <Route path="/dashboard" exact component={Dashboard} />
-          <Route path="/signup" exact component={SignUpPage} />
           <Route path="/courses" exact component={Courses} />
           <Route path="/logout" exact component={LogOutPage} />
           {/**<PrivateRoute path = "/courses/:id" exact component = {CoursePage}/>
-                    <PrivateRoute path = "/students/edit/:id" component={EditStudentContact} />
-                    <PrivateRoute path = "/students/content/:id" component = {StudentPersonalPage}/> */}
+            <PrivateRoute path = "/students/edit/:id" component={EditStudentContact} />
+            <PrivateRoute path = "/students/content/:id" component = {StudentPersonalPage}/> */}
           <Route component={NotFound} />
         </Switch>
       </div>
