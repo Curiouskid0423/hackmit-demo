@@ -95,7 +95,7 @@ async function updatePredictedScores(assignment_id) {
   .then(()=> console.log('The CSV file was written successfully'));
 
   var exec = require('child_process').exec, child;
-  let cmd = 'tangram train --file out.csv --target ' + assignment_id;
+  let cmd = 'tangram train --file out.csv --target ' + assignment_id + "_time";
 
   child = exec(cmd,
     function (error, stdout, stderr) {
@@ -108,45 +108,72 @@ async function updatePredictedScores(assignment_id) {
   child();
 }
 
-async function getPredictedScore(user_id) {
+async function getPredictedScore(user_id, assignment_id) {
   // TODO: Return predicted score for user with id = user_id
-  // const fs = require("fs");
-  // const path = require("path");
-  // const tangram = require("@tangramdotdev/tangram");
+  const fs = require("fs");
+  const path = require("path");
+  const tangram = require("@tangramdotdev/tangram");
 
-  // const info = await db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
-  // const background_info = await db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
+  const info = await db.getRows("SELECT user_id, assignment_id, SUM(num_hours) AS time, MAX(completed) AS complete, SUM(num_entries) AS days FROM (SELECT user_id, assignment_id, SUM(hours) AS num_hours, completed, COUNT(*) as num_entries FROM classcaster_schema.times GROUP BY (user_id, assignment_id, completed)) GROUP BY (user_id, assignment_id)", []);
+  const background_info = await db.getRows("SELECT id AS user_id, race, gender, age, num_upper_taken, num_lower_taken FROM classcaster_schema.users", []);
   
-  // // Get the path to the .tangram file.
-  // const modelPath = path.join("out.tangram");
-  // // Load the model from the path.
-  // const modelData = fs.readFileSync(modelPath);
-  // const model = new tangram.Model(modelData.buffer);
+  // Get the path to the .tangram file.
+  const modelPath = path.join("out.tangram");
+  // Load the model from the path.
+  const modelData = fs.readFileSync(modelPath);
+  const model = new tangram.Model(modelData.buffer);
   
-  // // Create an example input matching the schema of the CSV file the model was trained on.
-  // // Here the data is just hard-coded, but in your application you will probably get this
-  // // from a database or user input.
-  // const input = {
-  //   age: 63,
-  //   gender: "male",
-  //   chest_pain: "typical angina",
-  //   resting_blood_pressure: 145,
-  //   cholesterol: 233,
-  //   fasting_blood_sugar_greater_than_120: "true",
-  //   resting_ecg_result: "probable or definite left ventricular hypertrophy",
-  //   exercise_max_heart_rate: 150,
-  //   exercise_induced_angina: "no",
-  //   exercise_st_depression: 2.3,
-  //   exercise_st_slope: "downsloping",
-  //   fluoroscopy_vessels_colored: "0",
-  //   thallium_stress_test: "fixed defect",
-  // };
+  var race_map = {
+    "white": 0,
+    "black": 1,
+    "asian": 2,
+    "hawaiian": 3,
+    "american_indian": 4,
+    "other": 5,
+    "not_provided": 6
+  }
+  var gender_map = {
+    "male": 0,
+    "female": 1,
+    "other": 2,
+    "not_provided": 3
+  }
+
+  var class_feat = {};
+
+   // Collect values for mean and std
+  for (const row of background_info) {
+    let intage = parseInt(row.age);
+    if (intage == null || isNaN(intage)){
+      intage = 20;
+    }
+
+    class_feat[row.user_id] = {
+      "race": race_map[row.race],
+      "gender": gender_map[row.gender],
+      "age": intage,
+      "upper": parseInt(row.num_upper_taken),
+      "lower": parseInt(row.num_lower_taken)
+    }
+  }
+
+  for (const row of info) {
+    class_feat[row.user_id][(row.assignment_id)+"_time"] = parseFloat(row.time);
+    class_feat[row.user_id][(row.assignment_id)+"_days"] = parseInt(row.days);
+    let complete = 1 ? row.complete : 0;
+    class_feat[row.user_id][(row.assignment_id)+"_complete"] = complete;
+  }
+
+  let input = class_feat[user_id]
+  delete input[assignment_id+"_complete"]
+  delete input[assignment_id+"_days"]
+  delete input[assignment_id+"_time"]
   
-  // // Make the prediction!
-  // const output = model.predict(input);
+  // Make the prediction!
+  const output = model.predict(input);
   
-  // // Print the output.
-  // console.log("Output:", output);
+  // Print the output.
+  console.log("Output:", output);
 }
 
 module.exports.updatePredictedScores = updatePredictedScores;
