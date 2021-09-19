@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, GridItem, Box } from "@chakra-ui/react";
+import { Grid, GridItem, Text, useBreakpointValue, Heading } from "@chakra-ui/react";
+import CourseItem from "./CourseItem";
 
 const Dashboard = (props) => {
 
@@ -11,10 +12,31 @@ const Dashboard = (props) => {
             gap={4}
             p = {3}
             >
-            <GridItem rowSpan={7} colSpan={2} bg="tomato" />
+            <GridItem rowSpan={7} colSpan={2} >
+                <Heading 
+                    fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
+                    margin={"4rem 0 0 1rem"}
+                    >
+                    <Text
+                        as={'span'}
+                        position={'relative'}
+                        _after={{
+                            content: "''",
+                            width: 'full',
+                            height: useBreakpointValue({ base: '20%', md: '30%' }),
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 3,
+                            bg: 'blue.200',
+                            zIndex: -1,
+                        }}>
+                        Dashboard
+                    </Text>
+                </Heading>
+            </GridItem>
             <GridItem rowSpan={2} colSpan={3} bg="papayawhip" />
             <GridItem rowSpan={2} colSpan={3} bg="papayawhip" />
-            <GridItem rowSpan={5} colSpan={6} bg="blue.400">
+            <GridItem rowSpan={5} colSpan={6}>
                 <Grid 
                     templateRows="repeat(4, 1fr)" 
                     templateColumns="repeat(2, 1fr)" 
@@ -22,9 +44,12 @@ const Dashboard = (props) => {
                     gap = {4} 
                     height = {"100%"}
                 >
-                    <GridItem rowSpan={1} colSpan={1} bg="tomato"> fdsfd </GridItem>
-                    <GridItem colSpan={1} bg="tomato"> fdsfd </GridItem>
-                    <GridItem colSpan={1} bg="tomato"> fdsfd </GridItem>
+                    {
+                        <GridItem rowSpan={1} colSpan={1}> 
+                            <CourseItem />
+                        </GridItem> 
+                    }
+                    
                 </Grid>
             </GridItem>
         </Grid>
